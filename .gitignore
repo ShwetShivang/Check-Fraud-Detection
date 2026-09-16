@@ -1,0 +1,43 @@
+# ─── Virtual Environment ─────────────────────────────────────
+venv/
+env/
+.venv/
+
+# ─── Python Cache ────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+.pytest_cache/
+
+# ─── Model Weights & Large Outputs ───────────────────────────
+# Trained model weights (too large for GitHub, re-train with train.py)
+outputs/models/*.pth
+outputs/models/*.pkl
+
+# ─── Raw Dataset (download separately) ───────────────────────
+data/raw/
+data/processed/
+data/synthetic/
+
+# ─── IDE / Editor ────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ─── OS Files ────────────────────────────────────────────────
+desktop.ini
+ehthumbs.db
+
+# ─── Jupyter ─────────────────────────────────────────────────
+.ipynb_checkpoints/
+
+# ─── Distribution / Packaging ────────────────────────────────
+dist/
+build/
+*.egg-info/
+*.egg
