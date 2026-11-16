@@ -1,0 +1,57 @@
+Matplotlib is building the font cache; this may take a moment.
+
+[1/4] Blank cheque templates
+  [OK] Axis Bank: template from 87 cheques
+  [OK] ICICI Bank: template from 8 cheques
+  [OK] Syndicate Bank: template from 7 cheques
+  [OK] Canara Bank: template from 10 cheques
+
+[2/4] Pen-labelled ink-unit dataset
+  10/112 cheques  (16s)
+  20/112 cheques  (34s)
+  30/112 cheques  (48s)
+  40/112 cheques  (63s)
+  50/112 cheques  (76s)
+  60/112 cheques  (90s)
+  70/112 cheques  (103s)
+  80/112 cheques  (115s)
+  90/112 cheques  (127s)
+  100/112 cheques  (143s)
+  110/112 cheques  (158s)
+  [OK] 5504 units from 112 cheques -> E:\Check-Fraud-Detection-1\outputs\ink_dataset.npz
+  5504 ink units, 1674 pen-labelled, 112 cheques
+
+[3/4] Cross-validation (5 folds, grouped by cheque)
+  -> classical
+    fold 1/5 done
+    fold 2/5 done
+    fold 3/5 done
+    fold 4/5 done
+    fold 5/5 done
+     pair AUC 0.939 | cheque AUC 0.966 | acc 0.929 | P 0.971 R 0.884 | full-cheque detection 0.884
+  -> siamese
+    fold 1/5 done
+    fold 2/5 done
+    fold 3/5 done
+    fold 4/5 done
+    fold 5/5 done
+     pair AUC 0.888 | cheque AUC 0.884 | acc 0.817 | P 0.874 R 0.741 | full-cheque detection 0.750
+  -> cnn
+    fold 1/5 done
+    fold 2/5 done
+    fold 3/5 done
+    fold 4/5 done
+    fold 5/5 done
+     pair AUC 0.892 | cheque AUC 0.912 | acc 0.839 | P 0.913 R 0.750 | full-cheque detection 0.759
+  [OK] Saved figure: E:\Check-Fraud-Detection-1\outputs\figures\roc_curves.png
+  [OK] Saved figure: E:\Check-Fraud-Detection-1\outputs\figures\confusion_matrices.png
+  [OK] Saved figure: E:\Check-Fraud-Detection-1\outputs\figures\model_comparison.png
+  [OK] Saved figure: E:\Check-Fraud-Detection-1\outputs\figures\score_distributions.png
+
+[4/4] Final models on all cheques
+  [OK] classical -> E:\Check-Fraud-Detection-1\outputs\models\ink_classical.pkl
+  [OK] siamese -> E:\Check-Fraud-Detection-1\outputs\models\ink_siamese.pth
+  [OK] cnn -> E:\Check-Fraud-Detection-1\outputs\models\ink_cnn.pth
+
+  metrics -> E:\Check-Fraud-Detection-1\outputs\models\ink_metrics.json
+  [OK] done in 1415s

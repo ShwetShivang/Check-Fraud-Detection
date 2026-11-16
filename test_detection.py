@@ -1,16 +1,27 @@
-"""Test ALL THREE models on the 20 curated samples: 5 genuine + 15 fraud."""
-import os, sys
+"""
+Run all three trained models on the demo cheques in data/samples/.
+
+  fraud_*    real IDRBT scans altered with a second pen   -> expected FRAUD
+  genuine_*  the same cheques with pen 2's ink erased      -> expected GENUINE
+
+Note: the demo cheques come from IDRBT, which the final models were trained
+on.  For an unbiased estimate see the cross-validated numbers printed by
+`python -m src.train` (outputs/models/ink_metrics.json).
+"""
+import os
+import sys
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from src.fraud_pipeline import FraudDetector
 
 SAMPLES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "samples")
-MODELS  = ['siamese', 'cnn', 'classical']
+MODELS = ['classical', 'siamese', 'cnn']
 
-files = sorted([f for f in os.listdir(SAMPLES) if f.endswith('.png')])
+files = sorted(f for f in os.listdir(SAMPLES) if f.lower().endswith(('.jpg', '.png', '.tif')))
 
-print("\n" + "="*75)
-print("  ALL-MODELS DETECTION TEST  (5 genuine + 15 fraud = 20 samples)")
-print("="*75)
+print("\n" + "=" * 78)
+print(f"  ALL-MODELS DETECTION TEST  ({len(files)} demo cheques)")
+print("=" * 78)
 
 overall = {m: {'correct': 0, 'total': 0} for m in MODELS}
 failures = []
@@ -22,43 +33,36 @@ for model_type in MODELS:
         print(f"\n[SKIP] {model_type}: could not load - {e}")
         continue
 
-    print(f"\n--- {model_type.upper()} MODEL ---")
+    print(f"\n--- {model_type.upper()} (threshold {detector.threshold:.3f}) ---")
     for fname in files:
-        path = os.path.join(SAMPLES, fname)
         expected = "GENUINE" if fname.startswith("genuine") else "FRAUD"
         try:
-            result = detector.detect(path)
-            verdict = result['verdict']
-            conf    = result['confidence']
+            r = detector.detect(os.path.join(SAMPLES, fname), rgb=False)
+            verdict, score = r['verdict'], r['score']
         except Exception as e:
-            verdict, conf = "ERROR", 0.0
-
-        match   = verdict == expected
-        symbol  = "OK  " if match else "FAIL"
-        overall[model_type]['total']   += 1
-        if match:
-            overall[model_type]['correct'] += 1
-        else:
+            verdict, score = f"ERROR ({e})", 0.0
+        ok = verdict == expected
+        overall[model_type]['total'] += 1
+        overall[model_type]['correct'] += ok
+        if not ok:
             failures.append((model_type, fname, expected, verdict))
+        print(f"  {'OK  ' if ok else 'FAIL'} {fname:<34s} -> {verdict:8s} score {score:.3f}")
 
-        print(f"  {symbol} {fname:<40s} -> {verdict:8s} ({conf:.0%})")
-
-# ── Summary ──────────────────────────────────────────────────────────────
-print("\n" + "="*75)
+print("\n" + "=" * 78)
 print("  SUMMARY")
-print("="*75)
+print("=" * 78)
 for m in MODELS:
-    c = overall[m]['correct']
-    t = overall[m]['total']
-    if t == 0:
-        continue
-    pct = c / t * 100
-    bar = "#" * int(pct // 5) + "." * (20 - int(pct // 5))
-    print(f"  {m.upper():<12s} [{bar}]  {c}/{t} ({pct:.0f}%)")
+    c, t = overall[m]['correct'], overall[m]['total']
+    if t:
+        pct = c / t * 100
+        print(f"  {m.upper():<10s} [{'#' * int(pct // 5):<20s}]  {c}/{t} ({pct:.0f}%)")
 
-if failures:
-    print(f"\n  Failed cases:")
+if not any(overall[m]['total'] for m in MODELS):
+    print("\n  NO MODELS COULD BE TESTED [FAIL]")
+    sys.exit(1)
+elif failures:
+    print("\n  Failed cases:")
     for m, f, exp, got in failures:
         print(f"    [{m}] {f} - expected {exp}, got {got}")
 else:
-    print("\n  ALL MODELS CORRECT ON ALL SAMPLES! [PASS]")
+    print("\n  ALL MODELS CORRECT ON ALL SAMPLES [PASS]")

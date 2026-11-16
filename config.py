@@ -14,6 +14,7 @@ OUTPUT_DIR = os.path.join(BASE_DIR, "outputs")
 MODEL_DIR = os.path.join(OUTPUT_DIR, "models")
 FIGURES_DIR = os.path.join(OUTPUT_DIR, "figures")
 SAMPLE_RESULTS_DIR = os.path.join(OUTPUT_DIR, "sample_results")
+TEMPLATE_DIR = os.path.join(DATA_DIR, "templates")     # blank per-bank cheques
 
 # ─── Image Settings ──────────────────────────────────────────────────────
 IMAGE_SIZE = (256, 512)         # (height, width) after resize
@@ -64,5 +65,5 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # ─── Ensure directories exist ────────────────────────────────────────────
 for d in [DATA_DIR, RAW_DATA_DIR, PROCESSED_DIR, SYNTHETIC_DIR,
-          OUTPUT_DIR, MODEL_DIR, FIGURES_DIR, SAMPLE_RESULTS_DIR]:
+          OUTPUT_DIR, MODEL_DIR, FIGURES_DIR, SAMPLE_RESULTS_DIR, TEMPLATE_DIR]:
     os.makedirs(d, exist_ok=True)
